@@ -11,7 +11,6 @@ source:
 
 build:
   number: 0
-  skip: true  # [win]
   # libgpg-error does not exist on s390x
   skip: True  # [s390x]
   run_exports:
@@ -20,7 +19,6 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
     - make       # [unix]
     - libtool    # [unix]
     - automake   # [unix]
@@ -32,6 +30,7 @@ requirements:
 
 test:
   commands:
+  # We're running a make check in the build.sh script in lieu of post-build tests.
 
 about:
   home: https://www.gnupg.org/software/libassuan/index.html
