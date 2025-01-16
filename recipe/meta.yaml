@@ -11,8 +11,10 @@ source:
 
 build:
   number: 0
-  # libgpg-error does not exist on s390x
+  # libgpg-error does not exist on the s390x platform
   skip: True  # [s390x]
+  # libgpg-error does not exist on the win platform
+  skip: True  # [win]
   run_exports:
     - {{ pin_subpackage('libassuan', max_pin='x') }}
 
