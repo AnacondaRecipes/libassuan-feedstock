@@ -1,36 +1,38 @@
 {% set name = "libassuan" %}
 {% set version = "3.0.1" %}
-{% set sha256 = "c8f0f42e6103dea4b1a6a483cb556654e97302c7465308f58363778f95f194b1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
   url: https://www.gnupg.org/ftp/gcrypt/{{ name }}/{{ name }}-{{ version }}.tar.bz2
-  sha256: {{ sha256 }}
+  sha256: c8f0f42e6103dea4b1a6a483cb556654e97302c7465308f58363778f95f194b1
 
 build:
   number: 0
-  skip: true  # [win]
+  # libgpg-error does not exist on the s390x platform
+  skip: True  # [s390x]
+  # libgpg-error does not exist on the win platform
+  skip: True  # [win]
   run_exports:
     - {{ pin_subpackage('libassuan', max_pin='x') }}
 
 requirements:
   build:
     - {{ compiler('c') }}
-    - {{ stdlib("c") }}
-    - {{ compiler('cxx') }}
     - make       # [unix]
     - libtool    # [unix]
     - automake   # [unix]
     - gnuconfig  # [unix]
   host:
-    - libgpg-error
+    # https://github.com/gpg/libassuan/blob/libassuan-3.0.1/configure.ac#L402
+    # but avaliable only version 1.42 in the main channel.
+    - libgpg-error ==1.42
 
 test:
   commands:
+  # We're running a make check in the build.sh script in lieu of post-build tests.
 
 about:
   home: https://www.gnupg.org/software/libassuan/index.html
@@ -41,8 +43,13 @@ about:
   description: |
     Libassuan is a small library implementing the so-called Assuan protocol.
     This protocol is used for IPC between most newer GnuPG components.
+  doc_url: https://www.gnupg.org/software/libassuan/index.html
+  dev_url: https://github.com/gpg/libassuan
 
 extra:
   recipe-maintainers:
     - mariusvniekerk
     - xhochy
+  skip-lints:
+    # Added make check in the build.sh
+    - missing_tests

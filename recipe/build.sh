@@ -13,4 +13,6 @@ fi
 autoreconf -if
 ./configure --prefix=$PREFIX
 make
+# Enable tests
+make check
 make install
