@@ -1,34 +1,30 @@
 {% set name = "libassuan" %}
-{% set version = "3.0.1" %}
+{% set version = "3.0.2" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://www.gnupg.org/ftp/gcrypt/{{ name }}/{{ name }}-{{ version }}.tar.bz2
-  sha256: c8f0f42e6103dea4b1a6a483cb556654e97302c7465308f58363778f95f194b1
+  sha256: d2931cdad266e633510f9970e1a2f346055e351bb19f9b78912475b8074c36f6
 
 build:
   number: 0
-  # libgpg-error does not exist on the s390x platform
-  skip: True  # [s390x]
-  # libgpg-error does not exist on the win platform
   skip: True  # [win]
   run_exports:
     - {{ pin_subpackage('libassuan', max_pin='x') }}
 
 requirements:
   build:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - make       # [unix]
     - libtool    # [unix]
     - automake   # [unix]
     - gnuconfig  # [unix]
   host:
-    # https://github.com/gpg/libassuan/blob/libassuan-3.0.1/configure.ac#L402
-    # but avaliable only version 1.42 in the main channel.
-    - libgpg-error ==1.42
+    - libgpg-error {{ libgpg_error }}
 
 test:
   commands:
